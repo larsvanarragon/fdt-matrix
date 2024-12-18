@@ -14,12 +14,12 @@ LOG_LEVEL = logging.DEBUG
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 LOG_FILENAME = f"matrix-mbt{now}.log"
-LOG_FOLDER = "log"
+LOG_FOLDER = "logs"
 LOG_FILE = Path(f"{LOG_FOLDER}/{LOG_FILENAME}")
 
 # import from own libraries
 from matrix_user import MatrixUser
-
+import torxakis_connection
 
 # TO BE TAKEN FROM CONFIG:
 SERVER_PORT = "8008"
@@ -51,16 +51,17 @@ def main():
     logger.addHandler(handler)
     logger.info("initialized logging")
 
-    user = MatrixUser(SERVER, USERNAME, PASSWORD)
-    user.login()
-    time.sleep(0.5)
-    user.send_message(TESTROOM_ID, "some Message")
-    time.sleep(0.5)
-    user.leave_room(TESTROOM_ID)
-    time.sleep(0.5)
-    user.join_room(TESTROOM_ID)
-    time.sleep(0.5)
-    user.send_message(TESTROOM_ID, "am back")
+    torxakis_connection.connect_to_torxakis()
+    # user = MatrixUser(SERVER, USERNAME, PASSWORD)
+    # user.login()
+    # time.sleep(0.5)
+    # user.send_message(TESTROOM_ID, "some Message")
+    # time.sleep(0.5)
+    # user.leave_room(TESTROOM_ID)
+    # time.sleep(0.5)
+    # user.join_room(TESTROOM_ID)
+    # time.sleep(0.5)
+    # user.send_message(TESTROOM_ID, "am back")
 
 if __name__ == '__main__':
     main()

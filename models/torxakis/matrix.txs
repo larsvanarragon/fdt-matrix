@@ -1,0 +1,63 @@
+TYPEDEF UserOp ::= 
+    SendMessage
+ENDDEF
+
+TYPEDEF Result ::= 
+    Ok |
+    NOk |
+    ASentMessage { smMsg :: String }
+ENDDEF
+
+CHANDEF Channels ::= In  :: UserOp;
+                     Out :: Result
+ENDDEF
+
+TYPEDEF StringList ::=
+    Cons { hd :: String; tl :: StringList } |
+    Nil
+ENDDEF
+
+TYPEDEF State ::=
+    S { msgList :: StringList }
+ENDDEF
+
+CONSTDEF
+  initialState :: State ::=
+    S(Nil)
+ENDDEF
+
+FUNCDEF appendMessage (s :: State; m :: String) :: State ::=
+    S(Cons(m, msgList(s)))
+ENDDEF
+
+MODELDEF User ::=
+    CHAN IN   In
+    CHAN OUT  Out
+ 
+    BEHAVIOUR  
+        sendMessage [In, Out] ("testUser111", initialState)
+ENDDEF
+
+CNECTDEF Matrix ::= CLIENTSOCK
+    CHAN OUT In HOST "localhost" PORT 7890
+    ENCODE In? op -> ! toString(op)
+
+    CHAN IN Out HOST "localhost" PORT 7890
+    DECODE Out! fromString(r) <- ? r
+ENDDEF
+
+PROCDEF
+    sendMessage [op :: UserOp; res :: Result] (user :: String; s :: State) ::=
+        {op ? userOp} [[ isSendMessage(userOp) ]]
+            >->
+        {res ? sent} [[ isASentMessage(sent) ]]
+            >->
+        acknowledgeSentMessage[op, res] (user, smMsg(sent), s)
+ENDDEF
+
+PROCDEF
+    acknowledgeSentMessage [op :: UserOp; res :: Result] (user :: String; sent :: String; s :: State) ::=
+        {res ! Ok}
+            >->
+        sendMessage[op, res] (user, appendMessage(s, sent))
+ENDDEF

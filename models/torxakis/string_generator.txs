@@ -1,0 +1,138 @@
+
+TYPEDEF CharLowerCase ::= 
+    Ca | Cb | Cc | Cd | Ce | Cf | Cg | Ch | Ci | Cj | Ck | Cl | Cm | Cn | Co | Cp | Cq | Cr | Cs | Ct | Cu | Cv | Cw | Cx | Cy | Cz
+ENDDEF
+
+FUNCDEF clcToString (clc :: CharLowerCase) :: String ::=
+    IF isCa(clc) THEN "a" ELSE
+    IF isCb(clc) THEN "b" ELSE
+    IF isCc(clc) THEN "c" ELSE
+    IF isCd(clc) THEN "d" ELSE
+    IF isCe(clc) THEN "e" ELSE
+    IF isCf(clc) THEN "f" ELSE
+    IF isCg(clc) THEN "g" ELSE
+    IF isCh(clc) THEN "h" ELSE
+    IF isCi(clc) THEN "i" ELSE
+    IF isCj(clc) THEN "j" ELSE
+    IF isCk(clc) THEN "k" ELSE
+    IF isCl(clc) THEN "l" ELSE
+    IF isCm(clc) THEN "m" ELSE
+    IF isCn(clc) THEN "n" ELSE
+    IF isCo(clc) THEN "o" ELSE
+    IF isCp(clc) THEN "p" ELSE
+    IF isCq(clc) THEN "q" ELSE
+    IF isCr(clc) THEN "r" ELSE
+    IF isCs(clc) THEN "s" ELSE
+    IF isCt(clc) THEN "t" ELSE
+    IF isCu(clc) THEN "u" ELSE
+    IF isCv(clc) THEN "v" ELSE
+    IF isCw(clc) THEN "w" ELSE
+    IF isCx(clc) THEN "x" ELSE
+    IF isCy(clc) THEN "y" ELSE
+    IF isCz(clc) THEN "z" ELSE
+        ""
+    FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI
+ENDDEF
+
+TYPEDEF CharUpperCase ::=
+    CA | CB | CC | CD | CE | CF | CG | CH | CI | CJ | CK | CL | CM | CN | CO | CP | CQ | CR | CS | CT | CU | CV | CW | CX | CY | CZ
+ENDDEF
+
+FUNCDEF cucToString (cuc :: CharUpperCase) :: String ::=
+    IF isCA(cuc) THEN "A" ELSE
+    IF isCB(cuc) THEN "B" ELSE
+    IF isCC(cuc) THEN "C" ELSE
+    IF isCD(cuc) THEN "D" ELSE
+    IF isCE(cuc) THEN "E" ELSE
+    IF isCF(cuc) THEN "F" ELSE
+    IF isCG(cuc) THEN "G" ELSE
+    IF isCH(cuc) THEN "H" ELSE
+    IF isCI(cuc) THEN "I" ELSE
+    IF isCJ(cuc) THEN "J" ELSE
+    IF isCK(cuc) THEN "K" ELSE
+    IF isCL(cuc) THEN "L" ELSE
+    IF isCM(cuc) THEN "M" ELSE
+    IF isCN(cuc) THEN "N" ELSE
+    IF isCO(cuc) THEN "O" ELSE
+    IF isCP(cuc) THEN "P" ELSE
+    IF isCQ(cuc) THEN "Q" ELSE
+    IF isCR(cuc) THEN "R" ELSE
+    IF isCS(cuc) THEN "S" ELSE
+    IF isCT(cuc) THEN "T" ELSE
+    IF isCU(cuc) THEN "U" ELSE
+    IF isCV(cuc) THEN "V" ELSE
+    IF isCW(cuc) THEN "W" ELSE
+    IF isCX(cuc) THEN "X" ELSE
+    IF isCY(cuc) THEN "Y" ELSE
+    IF isCZ(cuc) THEN "Z" ELSE
+        ""
+    FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI FI
+ENDDEF
+
+TYPEDEF Digit ::=
+    DZero | DOne | DTwo | DThree | DFour | DFive | DSix | DSeven | DEight | DNine
+ENDDEF
+
+FUNCDEF digToString (dig :: Digit) :: String ::=
+    IF isDZero(dig) THEN "0" ELSE
+    IF isDOne(dig) THEN "1" ELSE
+    IF isDTwo(dig) THEN "2" ELSE
+    IF isDThree(dig) THEN "3" ELSE
+    IF isDFour(dig) THEN "4" ELSE
+    IF isDFive(dig) THEN "5" ELSE
+    IF isDSix(dig) THEN "6" ELSE
+    IF isDSeven(dig) THEN "7" ELSE
+    IF isDEight(dig) THEN "8" ELSE
+    IF isDNine(dig) THEN "9" ELSE
+        ""
+    FI FI FI FI FI FI FI FI FI FI
+ENDDEF
+
+TYPEDEF AlphaNumeric ::=
+    CLC { clcv :: CharLowerCase } |
+    CUC { cucv :: CharUpperCase } |
+    DIG { digv :: Digit }
+ENDDEF
+
+FUNCDEF
+    anToString (an :: AlphaNumeric) :: String ::=
+        IF isCLC(an) THEN clcToString(clcv(an)) ELSE
+        IF isCUC(an) THEN cucToString(cucv(an)) ELSE
+        IF isDIG(an) THEN digToString(digv(an)) ELSE
+            ""
+        FI FI FI
+ENDDEF
+
+TYPEDEF AlphaNumericList ::=
+    Cons { hd :: AlphaNumeric; tl :: AlphaNumericList } |
+    Nil
+ENDDEF
+
+FUNCDEF anlToString (anl :: AlphaNumericList) :: String ::=
+    IF isNil(anl) THEN "" ELSE
+        IF isCLC(hd(anl)) THEN clcToString(clcv(hd(anl))) ++ anlToString(tl(anl)) ELSE
+        IF isCUC(hd(anl)) THEN cucToString(cucv(hd(anl))) ++ anlToString(tl(anl)) ELSE
+        IF isDIG(hd(anl)) THEN digToString(digv(hd(anl))) ++ anlToString(tl(anl)) ELSE
+            ""
+        FI FI FI
+    FI
+ENDDEF
+
+FUNCDEF anlLength (anl :: AlphaNumericList) :: Int ::=
+    IF isNil(anl) THEN 0 ELSE 1 + anlLength(tl(anl)) FI
+ENDDEF
+
+TYPEDEF RandomWord ::=
+    SevenLetters { slOne, slTwo, slThree, slFour, slFive, slSix, slSeven :: AlphaNumeric }
+ENDDEF
+
+FUNCDEF
+    randomWordToString (rw :: RandomWord) :: String ::=
+        IF isSevenLetters(rw) THEN
+            anToString(slOne(rw)) ++ anToString(slTwo(rw)) ++ anToString(slThree(rw)) ++ anToString(slFour(rw)) ++ anToString(slFive(rw)) ++ anToString(slSix(rw)) ++ anToString(slSeven(rw))
+        ELSE
+            ""
+        FI
+ENDDEF
+
+-- conclusion: randomness is borked :(
