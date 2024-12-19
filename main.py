@@ -19,7 +19,8 @@ LOG_FILE = Path(f"{LOG_FOLDER}/{LOG_FILENAME}")
 
 # import from own libraries
 from matrix_user import MatrixUser
-import torxakis_connection
+from label_adapter import LabelAdapter
+from torxakis_connection import TorxakisConnection
 
 # TO BE TAKEN FROM CONFIG:
 SERVER_PORT = "8008"
@@ -51,7 +52,12 @@ def main():
     logger.addHandler(handler)
     logger.info("initialized logging")
 
-    torxakis_connection.connect_to_torxakis()
+    user = MatrixUser(SERVER, USERNAME, PASSWORD)
+    user.login()
+    time.sleep(0.5)
+    handler = LabelAdapter(user)
+    txs_connection = TorxakisConnection(handler)
+    txs_connection.connect()
     # user = MatrixUser(SERVER, USERNAME, PASSWORD)
     # user.login()
     # time.sleep(0.5)
